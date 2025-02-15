@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Template</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #32CD32;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border: 1px solid #e0e0e0;
+            overflow: hidden;
+            width: 90%; /* Increased card width */
+            max-width: 900px; /* Increased max-width */
+            text-align: center;
+            padding: 30px; /* Increased padding inside card */
+        }
+
+        .video-container {
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            position: relative;
+            background-color: #f0f0f0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px; /* Space below video */
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .content {
+            padding: 0 20px; /* Horizontal padding for content */
+        }
+
+        .next-button, .quiz-button {
+            background-color: #32CD32;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            padding: 15px 40px; /* Increased button padding */
+            font-size: 20px; /* Increased button font size */
+            cursor: pointer;
+            transition: background 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            white-space: nowrap;
+            margin: 10px;
+        }
+
+        .next-button:hover, .quiz-button:hover {
+            background-color: #2eaf2e;
+        }
+
+        .content p {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+        </div>
+        <div class="content">
+            <p>Explanation:
+                Circular Array: Use i % n to simulate circular behavior.
+                Stack Logic:
+                Pop elements from the stack while nums[i % n] >= s.peek() because they can't be the "next greater" element.
+                The top of the stack (s.peek()) is the next greater element for nums[i % n].
+                Default to -1 when the stack is empty.This is some example content that will now have more space around it. You can add paragraphs, headings, etc. here.</p>
+            <button class="next-button" onclick="nextVideo()">NEXT</button>
+            <button class="quiz-button" onclick="goToQuiz()">GO TO QUIZ</button>
+        </div>
+    </div>
+
+    <script>
+        function nextVideo() {
+            alert("Load the next video here!");
+        }
+
+        function goToQuiz() {
+            window.location.href = "QUIZ.html";
+        }
+    </script>
+</body>
+</html>

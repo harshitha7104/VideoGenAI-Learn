@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Platform</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: rgb(37, 149, 164);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            overflow: hidden;
+        }
+
+        .question-section {
+            padding: 30px;
+        }
+
+        .question-header h1 {
+            font-size: 24px;
+            color: #333;
+            border-left: 4px solid #007bff;
+            padding-left: 10px;
+            margin-bottom: 20px;
+        }
+
+        .question h2 {
+            font-size: 20px;
+            color: #444;
+        }
+
+        .options {
+            list-style: none;
+            padding: 0;
+        }
+
+        .options li {
+            background: #f8f9fa;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .options li:hover {
+            background: #e2e6ea;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background-color: #218838;
+        }
+
+        .sidebar {
+            background: #007bff;
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+            height: 100%;
+        }
+
+        .sidebar h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        .pagination-table td {
+            background: white;
+            color: #007bff;
+            padding: 10px;
+            margin: 5px;
+            text-align: center;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .pagination-table td.active,
+        .pagination-table td:hover {
+            background: #0056b3;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="question-section" id="question-section">
+            <div class="question-header">
+                <h1>Topicwise Questions</h1>
+            </div>
+        </div>
+        <div class="sidebar">
+            <h2>Questions</h2>
+            <table class="pagination-table" id="pagination-table"></table>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+    {
+        question: "Which vitamin is known as the sunshine vitamin?",
+        options: ["Vitamin A", "Vitamin B", "Vitamin C", "Vitamin D"],
+        answer: 4
+    },
+    {
+        question: "What is the chemical symbol for water?",
+        options: ["H2O", "O2", "CO2", "NaCl"],
+        answer: 1
+    },
+    {
+        question: "Which organ in the human body is primarily responsible for detoxification?",
+        options: ["Liver", "Heart", "Lungs", "Kidneys"],
+        answer: 1
+    },
+    
+    {
+        question: "Which element has the chemical symbol 'O'?",
+        options: ["Gold", "Oxygen", "Osmium", "Zinc"],
+        answer: 2
+    },
+    {
+        question: "What is the capital city of France?",
+        options: ["Rome", "Berlin", "Paris", "Madrid"],
+        answer: 3
+    },
+    {
+        question: "What is the hardest natural substance on Earth?",
+        options: ["Gold", "Iron", "Diamond", "Platinum"],
+        answer: 3
+    },
+    {
+        question: "Which gas do plants primarily use for photosynthesis?",
+        options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"],
+        answer: 2
+    },
+    {
+        question: "What is the smallest unit of life in the human body?",
+        options: ["Tissue", "Cell", "Organ", "Molecule"],
+        answer: 2
+    }
+];
+
+
+let currentQuestion = 0;
+let answers = {};
+
+window.onload = function() {
+    displayCurrentQuestion();
+    generatePagination();
+    updatePagination();
+};
+
+function displayCurrentQuestion() {
+    const questionSection = document.getElementById('question-section');
+    questionSection.innerHTML = '';
+
+    const q = questions[currentQuestion];
+    const questionEl = document.createElement('div');
+    questionEl.className = 'question';
+    questionEl.innerHTML = `
+        <h2>${currentQuestion + 1}. ${q.question}</h2>
+        <ul class="options">
+            ${q.options.map((option, i) => `
+                <li>
+                    <label>
+                        <input type="radio" name="question${currentQuestion}" value="${i + 1}"
+                        ${answers[currentQuestion] == i + 1 ? 'checked' : ''} 
+                        onchange="saveAnswer(${currentQuestion}, ${i + 1})">
+                        ${option}
+                    </label>
+                </li>
+            `).join('')}
+        </ul>
+        <div class="navigation">
+            <button onclick="prevQuestion()" ${currentQuestion === 0 ? 'disabled' : ''}>Previous</button>
+            <button onclick="nextQuestion()" ${currentQuestion === questions.length - 1 ? 'disabled' : ''}>Next</button>
+        </div>
+        ${currentQuestion === questions.length - 1 ? '<button class="submit-btn" onclick="submitQuiz()">Submit</button>' : ''}
+    `;
+    questionSection.appendChild(questionEl);
+}
+
+function saveAnswer(qIndex, selectedOption) {
+    answers[qIndex] = selectedOption;
+}
+
+function nextQuestion() {
+    if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        displayCurrentQuestion();
+        updatePagination();
+    }
+}
+
+function prevQuestion() {
+    if (currentQuestion > 0) {
+        currentQuestion--;
+        displayCurrentQuestion();
+        updatePagination();
+    }
+}
+
+function generatePagination() {
+    const paginationTable = document.getElementById('pagination-table');
+    paginationTable.innerHTML = '';
+
+    questions.forEach((_, index) => {
+        const td = document.createElement('td');
+        td.innerText = index + 1;
+        td.onclick = () => goToQuestion(index);
+        paginationTable.appendChild(td);
+    });
+}
+
+function goToQuestion(index) {
+    currentQuestion = index;
+    displayCurrentQuestion();
+    updatePagination();
+}
+
+function updatePagination() {
+    document.querySelectorAll('#pagination-table td').forEach((cell, index) => {
+        cell.classList.toggle('active', index === currentQuestion);
+    });
+}
+
+function submitQuiz() {
+    let score = 0;
+    questions.forEach((q, index) => {
+        if (answers[index] == q.answer) {
+            score++;
+        }
+    });
+    let percentageScore = Math.round((score / questions.length) * 100);
+    window.location.href = `score.html?score=${percentageScore}&answers=${JSON.stringify(answers)}&questions=${JSON.stringify(questions)}`;
+}
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Analysis</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #000000;
+            margin: 0;
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 800px;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .question-analysis {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .question-analysis h2 {
+            color: #007bff;
+            margin-top: 0;
+        }
+
+        .options {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .option {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+
+        .correct {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+
+        .incorrect {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+
+        .selected {
+            font-weight: bold;
+        }
+
+        .summary {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .retry-btn {
+            display: block;
+            width: 200px;
+            margin: 20px auto 0;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+
+        .retry-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Quiz Analysis</h1>
+        <div id="analysis-container"></div>
+        <div class="summary" id="summary"></div>
+        <a href="QUIZ.html" class="retry-btn">Retry Quiz</a>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const answers = JSON.parse(urlParams.get('answers') || '{}');
+            const questions = JSON.parse(urlParams.get('questions') || '[]');
+            
+            let correctAnswers = 0;
+            const analysisContainer = document.getElementById('analysis-container');
+
+            questions.forEach((q, index) => {
+                const userAnswer = answers[index];
+                const isCorrect = userAnswer == q.answer;
+                if (isCorrect) correctAnswers++;
+
+                const questionAnalysis = document.createElement('div');
+                questionAnalysis.className = 'question-analysis';
+                questionAnalysis.innerHTML = `
+                    <h2>Question ${index + 1}</h2>
+                    <p>${q.question}</p>
+                    <ul class="options">
+                        ${q.options.map((option, i) => `
+                            <li class="option ${i + 1 == q.answer ? 'correct' : ''} ${i + 1 == userAnswer ? 'selected' : ''}">
+                                ${option}
+                                ${i + 1 == q.answer ? ' ✓' : ''}
+                                ${i + 1 == userAnswer && i + 1 != q.answer ? ' ✗' : ''}
+                            </li>
+                        `).join('')}
+                    </ul>
+                    <p>${isCorrect ? 'Correct!' : 'Incorrect.'}</p>
+                `;
+                analysisContainer.appendChild(questionAnalysis);
+            });
+
+            const summary = document.getElementById('summary');
+            const percentage = Math.round((correctAnswers / questions.length) * 100);
+            summary.textContent = `You got ${correctAnswers} out of ${questions.length} questions correct (${percentage}%)`;
+        };
+    </script>
+</body>
+</html>
